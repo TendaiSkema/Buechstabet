@@ -36,7 +36,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
             startActivity(intent);
             finish();
         }
-
+        //init items
         best = (Button)findViewById(R.id.addWord_add);
         defin = (EditText)findViewById(R.id.addWord_definition);
         text_input = (EditText)findViewById(R.id.addWord_word);
@@ -52,7 +52,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
         editor = speicher.edit();
 
         Bundle extras = getIntent().getExtras();
-
+        //laden der listen
         wörter_list = new String[extras.getStringArray("List").length+1];
         String[] wörter_dummy = extras.getStringArray("List");
 
@@ -103,7 +103,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
                 finish();
             }
             else{
-                Toast.makeText(getApplicationContext(), "Wort oder Beschreibung ist leer!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Wortfeld oder Beschreibung ist leer!", Toast.LENGTH_SHORT).show();
             }
         }
         else if(v==zurück){
@@ -113,21 +113,13 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
         }
     }
     public boolean checkInternet(){
+        //überprüft Internet verbindung
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo !=null && networkInfo.isConnectedOrConnecting();
     }
-    public void Save(String wort,String besch,String art,int pos){
-        //einzelnes abspeicher der wörter
-        for(int i = 0;i<wörter_list.length;i++){
-            editor.putString("wort"+i,wörter_list[i]);
-            editor.putString("definition"+i,definition_list[i]);
-            editor.putString("art"+i,art_list[i]);
-        }
-        editor.putInt("length",wörter_list.length);
-        editor.commit();
-    }
     private String checkArt() {
+        //wortart herausfinden
         String art = "Unbeschreiblich";
         boolean cb_adjektiv_isCheckt = cb_adjektiv.isChecked();
         boolean cb_nomen_isCheckt = cb_nomen.isChecked();
@@ -157,4 +149,17 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
 
         return art;
     }
+
+    /* alte methode zum einspeichen in sharedPreferences:
+    public void Save(String wort,String besch,String art,int pos){
+        //einzelnes abspeicher der wörter
+        for(int i = 0;i<wörter_list.length;i++){
+            editor.putString("wort"+i,wörter_list[i]);
+            editor.putString("definition"+i,definition_list[i]);
+            editor.putString("art"+i,art_list[i]);
+        }
+        editor.putInt("length",wörter_list.length);
+        editor.commit();
+    }
+    */
 }

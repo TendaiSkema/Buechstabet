@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,18 +61,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         speicher = getApplicationContext().getSharedPreferences("Daten", 0);
         editor = speicher.edit();
 
-        Log.i("myTag", "start Main");
         boolean first_load = true;
         try {
             Bundle extras = getIntent().getExtras();                    //versucht die extras die es von der aufrufenden Activity zu finden
-            String[] ExeptionChecker = extras.getStringArray("List");   //
+            String[] ExeptionChecker = extras.getStringArray("List");   //String[] zum überprüfen ob extras = null
             if(ExeptionChecker != null) {
                 wörter = extras.getStringArray("List");
                 first_load = false;
             }
             else{}
 
-        }catch (Exception e){Log.e("myTag","wörterliste kreieren übersprungen");}
+        }catch (Exception e){}
         if(first_load){
             LoadList();
         }
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    //Laden des wörter[]'s
+    //Laden des wörter[]'s aus sharedPreferences
     private void LoadList() {
         boolean fehler = false;
         editor.clear().apply();
@@ -111,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
     //erstellung der Liste
     public void ListCreator(){
-        Log.i("myTag", "Begin ListCreator");
 
         if (wörter!=null) {
             arrayList = new ArrayList<>(Arrays.asList(wörter));
@@ -119,11 +115,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             list.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
-        else {
-            Log.e("myTag", "wörter[] == null");
-        }
-
-        Log.i("myTag", "end ListCreator");
     }
 
     //Item Listener

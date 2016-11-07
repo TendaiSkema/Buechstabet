@@ -2,8 +2,8 @@ package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +24,7 @@ public class DefinEditor extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_defin_editor);
 
+        //init items
         bt_Edit_Back = (Button)findViewById(R.id.definEditor_back);
         bt_Edit_Fin = (Button)findViewById(R.id.definEditor_Finish);
         edit_defin = (EditText)findViewById(R.id.definEditor_editDefinition);
@@ -31,6 +32,7 @@ public class DefinEditor extends AppCompatActivity implements View.OnClickListen
         bt_Edit_Back.setOnClickListener(this);
         bt_Edit_Fin.setOnClickListener(this);
 
+        //informationen zuordnen
         Bundle extras = getIntent().getExtras();
 
         selectedItem = extras.getInt("BeschPos");
@@ -41,6 +43,7 @@ public class DefinEditor extends AppCompatActivity implements View.OnClickListen
         speicher = getApplicationContext().getSharedPreferences("Daten", 0);
         editor = speicher.edit();
 
+        //laden der definitions liste
         for(int i= 0;i<list_length;i++){
 
             if(speicher.getString("definition"+i,null)!= null) {

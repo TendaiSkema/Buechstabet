@@ -2,7 +2,6 @@ package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -39,6 +38,7 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPostExecute(String result) {
+        //return statement von doInBackgroung in eimem toast ausgeben
         Toast.makeText(ctx,result,Toast.LENGTH_LONG).show();
     }
 
@@ -48,6 +48,7 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         String methode = params[0];
 
         if(methode.equals("Save")){
+            //einspeichern des neuen wortes
 
             final String url = "http://buechstabet.esy.es/buechstabet/add_word.php";
             String wort = params[1];
@@ -56,21 +57,24 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
             String position = params[4];
 
             try {
+                //Verbindung zum php-script herstellen
                 URL scriptURL = new URL(url);
                 HttpURLConnection connection = (HttpURLConnection) scriptURL.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
                 OutputStream outputStream = connection.getOutputStream();
+
+                //Die zu speichernden daten anpassen und "key" zuordnen
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
                 String daten =  URLEncoder.encode("wort","UTF-8")+"="+URLEncoder.encode(wort,"UTF-8")+"&"+
                         URLEncoder.encode("besch","UTF-8")+"="+URLEncoder.encode(besch,"UTF-8")+"&"+
                         URLEncoder.encode("art","UTF-8")+"="+URLEncoder.encode(art,"UTF-8")+"&"+URLEncoder.encode("pos","UTF-8")+"="+URLEncoder.encode(position,"UTF-8");
 
-                Log.e("help",daten);
                 bufferedWriter.write(daten);
                 bufferedWriter.flush();
                 bufferedWriter.close();
 
+                //Antwort de skripts empfangen starten
                 InputStream is = connection.getInputStream();
                 String aswer = getTextFromPHP(is);
                 is.close();
@@ -83,13 +87,18 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
                 e.printStackTrace();
             }
         }
+        else if(methode.equals("BeschreibungLaden")){
+            //Laden der Beschreibung
+        }
         return null;
     }
     public String getTextFromPHP(InputStream is){
+        //empfangen der php antwort
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder stringBuilder = new StringBuilder();
         String aktuelleZeile;
 
+        //zeile für zeile durchlesen und abspeichern
         try {
             while((aktuelleZeile = reader.readLine())!=null){
                 stringBuilder.append(aktuelleZeile);
