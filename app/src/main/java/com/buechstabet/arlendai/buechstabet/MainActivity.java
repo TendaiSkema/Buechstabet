@@ -89,22 +89,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
     //Laden des wörter[]'s aus sharedPreferences
     private void LoadList() {
-        boolean fehler = false;
-        editor.clear().apply();
-        int length = speicher.getInt("length",404);
-        String[] wörter_dummy = new String[length];
 
-        for (int i=0;i<wörter_dummy.length;i++){
-
-            wörter_dummy[i] = speicher.getString("wort"+i,null);
-
-            if(wörter_dummy[i]==null){
-                fehler = true;
-            }
-        }
-        if(fehler == false){
-            wörter = wörter_dummy;
-        }
+        String methode = "LoadList";
+        BackgroundTask backgroundTask = new BackgroundTask(this);
+        backgroundTask.execute(methode);
     }
     //erstellung der Liste
     public void ListCreator(){

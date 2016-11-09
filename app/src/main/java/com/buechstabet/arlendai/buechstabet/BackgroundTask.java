@@ -2,6 +2,7 @@ package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -13,6 +14,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -21,7 +23,11 @@ import java.net.URLEncoder;
  */
 
 public class BackgroundTask extends AsyncTask<String,Void,String> {
+
     Context ctx;
+    final String get_word_list= "http://buechstabet.esy.es/buechstabet/get_word_list.php";
+    final String url = "http://buechstabet.esy.es/buechstabet/add_word.php";
+    String jason_string,methode;
 
     BackgroundTask(Context ctx){
         this.ctx = ctx;
@@ -38,19 +44,21 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPostExecute(String result) {
-        //return statement von doInBackgroung in eimem toast ausgeben
-        Toast.makeText(ctx,result,Toast.LENGTH_LONG).show();
+
+        if(methode.equals("Save")) {
+            //return statement von doInBackgroung in eimem toast ausgeben
+            Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     protected String doInBackground(String... params) {
 
-        String methode = params[0];
+        methode = params[0];
 
         if(methode.equals("Save")){
             //einspeichern des neuen wortes
 
-            final String url = "http://buechstabet.esy.es/buechstabet/add_word.php";
             String wort = params[1];
             String besch = params[2];
             String art = params[3];
@@ -89,6 +97,34 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         }
         else if(methode.equals("BeschreibungLaden")){
             //Laden der Beschreibung
+        }
+        else if(methode.equals("LoadList")){
+            //Läd die wörter liste
+            try {
+                //stellt die verbindung zum php script her
+                URL scriptURL = new URL(get_word_list);
+                HttpURLConnection connection = (HttpURLConnection) scriptURL.openConnection();
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((jason_string = bufferedReader.readLine()) != null){
+
+                stringBuilder.append(jason_string+"\n");
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();
+                Log.i("JSON String",jason_string);
+                return stringBuilder.toString().trim();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
