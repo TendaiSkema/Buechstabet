@@ -2,10 +2,13 @@ package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,13 +31,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Button new_word,bSynchro;
     private ListView list;
 
-    //Speicher
-    private SharedPreferences speicher;
-    private SharedPreferences.Editor editor;
-
     //List dinge erstellen
-    private String[] wörter = {};
-    private ArrayList<String> arrayList;
+    private String[] wörter;
     private ArrayAdapter<String> adapter;
 
     @Override
@@ -54,28 +53,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        //check internet
+        if(!checkInternet()){
+            Toast.makeText(this,"Kein Internet...Bitte einschalten",Toast.LENGTH_LONG).show();
+            finish();
+        }
+
         //Layout
         list = (ListView)findViewById(R.id.main_wörter_list);
         list.setOnItemClickListener(this);
 
-        speicher = getApplicationContext().getSharedPreferences("Daten", 0);
-        editor = speicher.edit();
-
-        boolean first_load = true;
+        //überprüft fremdaufruf mit bundel
         try {
             Bundle extras = getIntent().getExtras();                    //versucht die extras die es von der aufrufenden Activity zu finden
             String[] ExeptionChecker = extras.getStringArray("List");   //String[] zum überprüfen ob extras = null
             if(ExeptionChecker != null) {
                 wörter = extras.getStringArray("List");
-                first_load = false;
             }
-            else{}
 
-        }catch (Exception e){}
-        if(first_load){
+        }catch (Exception e){
+            //fals nicht
+
             LoadList();
         }
-
 
         //List erstellungsmethode
         ListCreator();
@@ -87,18 +87,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    //Laden des wörter[]'s aus sharedPreferences
+
+    public boolean checkInternet(){
+        //überprüft Internet verbindung
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo !=null && networkInfo.isConnectedOrConnecting();
+    }
+    //Laden des wörter[]'s aus dem server
     private void LoadList() {
 
         String methode = "LoadList";
         BackgroundTask backgroundTask = new BackgroundTask(this);
         backgroundTask.execute(methode);
+        while (wörter == null){
+
+            //wen der überprüfungs boolean true ist wird die liste hergeholt
+            if(backgroundTask.getTest()){
+                wörter = backgroundTask.getWörter();
+            }
+        }
     }
     //erstellung der Liste
     public void ListCreator(){
 
         if (wörter!=null) {
-            arrayList = new ArrayList<>(Arrays.asList(wörter));
             adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, wörter);
             list.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -110,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Intent intent = new Intent(MainActivity.this, Discription.class);
         intent.putExtra("BeschPos", position);
-        intent.putExtra("ListLength", wörter.length);
         startActivity(intent);
 
     }

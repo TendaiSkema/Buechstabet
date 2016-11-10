@@ -17,8 +17,9 @@ public class Discription extends AppCompatActivity implements View.OnClickListen
     private Button btBack,btEdit;
     private TextView textView;
 
-    int selectedItem, list_length;
-    String[] beschreibungen, art;
+    int selectedItem;
+    String beschreibungen, art;
+    final String methode = "BeschreibungLaden";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,32 +34,18 @@ public class Discription extends AppCompatActivity implements View.OnClickListen
         btEdit.setOnClickListener(this);
 
         Bundle extras = getIntent().getExtras();
-
         selectedItem = extras.getInt("BeschPos");
-        list_length = extras.getInt("ListLength");
 
-        beschreibungen = new String[list_length];
-        art = new String[list_length];
-
-        speicher = getApplicationContext().getSharedPreferences("Daten", 0);
-        editor = speicher.edit();
-
-        for(int i= 0;i<list_length;i++){
-
-            if(speicher.getString("definition"+i,null)!= null) {
-
-                beschreibungen[i] = speicher.getString("definition" + i, null);
+        BackgroundTask backgroundTask = new BackgroundTask(this);
+        backgroundTask.execute(methode,String.valueOf(selectedItem));
+        while (beschreibungen==null){
+            if(backgroundTask.getTest()){
+                beschreibungen = backgroundTask.getBesch();
+                art = backgroundTask.getArt();
             }
-            else{ Log.e("myTag", "beschreibung an der stelle "+i+" ist null"); }
-
-            if(speicher.getString("art"+i,null)!= null) {
-
-                art[i]= speicher.getString("art"+i,null);
-            }
-            else{ Log.e("myTag", "art an der stelle "+i+" ist null"); }
         }
 
-        textView.setText(art[selectedItem]+"\n\n"+beschreibungen[selectedItem]);
+        textView.setText(art+"\n\n"+beschreibungen);
     }
 
     @Override
@@ -70,7 +57,6 @@ public class Discription extends AppCompatActivity implements View.OnClickListen
         else if(v==btEdit){
             Intent intent = new Intent(Discription.this,DefinEditor.class);
             intent.putExtra("BeschPos", selectedItem);
-            intent.putExtra("ListLength", list_length);
             startActivity(intent);
         }
     }
