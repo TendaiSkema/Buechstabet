@@ -39,7 +39,7 @@ public class Discription extends AppCompatActivity implements View.OnClickListen
         BackgroundTask backgroundTask = new BackgroundTask(this);
         backgroundTask.execute(methode,String.valueOf(selectedItem));
         while (beschreibungen==null){
-            if(backgroundTask.getTest()){
+            if(backgroundTask.getBesch_test()){
                 beschreibungen = backgroundTask.getBesch();
                 art = backgroundTask.getArt();
             }

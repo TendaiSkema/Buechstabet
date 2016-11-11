@@ -113,14 +113,14 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
                 while ((jason_string = bufferedReader.readLine()) != null){
 
                     stringBuilder.append(jason_string+"\n");
+                    Log.i("JSON","Jason_string = "+jason_string);
 
                 }
-
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
 
-                //kürzt den String um den überflüssigen zeilen umbruch und speichert im in dem string
+                //kürzt den String um den überflüssigen zeilen umbruch und speichert in dem string
                 String beschreibung_string = stringBuilder.toString().trim();
                 makeJSONtoString(beschreibung_string);
                 Log.i("JSON",beschreibung_string);
@@ -179,9 +179,10 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
             //macht der php-jasonstring zu einem java string
             JSONObject jasonObject = new JSONObject(besch_string);
             JSONArray jasonArray = jasonObject.getJSONArray("besch_response");
+            Log.i("JASON","Jsonarray = "+jasonArray.length());
             JSONObject jo = jasonArray.getJSONObject(0);
+            art = jo.getString("art");
             besch = jo.getString("besch");
-            besch = jo.getString("art");
             besch_test = true;
 
         } catch (JSONException e) {
@@ -241,19 +242,10 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
     @Override
     protected void onPostExecute(String result) {
 
-        if(methode.equals("Save")) {
-            //return statement von doInBackgroung in eimem toast ausgeben
-            Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
-        }
-        else if (methode.equals("LoadList")){
-            //macht einen Toast
-            Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
     }
     public String[] getWörter(){
-        for (int i = 0;i<word_array.length;i++){
-            Log.i("JASON",word_array[i]);
-        }
+
         return word_array;
     }
     public boolean getTest(){
@@ -266,5 +258,9 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
 
     public String getBesch() {
         return besch;
+    }
+
+    public boolean getBesch_test() {
+        return besch_test;
     }
 }
