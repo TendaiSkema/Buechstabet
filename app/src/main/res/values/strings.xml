@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Buechstabet</string>
-    <string name="action_settings">Wörter abgleichen</string>
+    <string name="action_settings">Aktualisieren</string>
     <string name="credits">Made by Tendai®</string>
 </resources>

@@ -3,7 +3,6 @@ package com.buechstabet.arlendai.buechstabet;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +22,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
- * Created by Gresch Marco on 06.11.2016.
+ * Created by Tendai Rondof on 06.11.2016.
  */
 
 public class BackgroundTask extends AsyncTask<String,Void,String> {
@@ -240,12 +239,9 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(String result) {}
 
-        Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
-    }
     public String[] getWörter(){
-
         return word_array;
     }
     public boolean getTest(){

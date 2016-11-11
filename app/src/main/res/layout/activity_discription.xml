@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_discription"
     android:layout_width="match_parent"
@@ -10,30 +11,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.buechstabet.arlendai.buechstabet.Discription">
 
-    <Button
-        android:text="Bearbeiten"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/discription_Back"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/discription_edit" />
-
-    <Button
-        android:text="Zurück"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/discription_Back"
-        android:textSize="14sp"
-        android:layout_alignParentTop="true"/>
-
     <Space
         android:layout_width="match_parent"
-        android:layout_height="14dp"
-        android:layout_below="@+id/discription_Back"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/space43"/>
+        android:id="@+id/space43"
+        android:layout_height="20dp" />
 
     <TextView
         android:text=""
@@ -55,5 +38,19 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/textView6"
         android:textSize="8sp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:srcCompat="@android:drawable/ic_menu_revert"
+        android:layout_alignBottom="@+id/discription_discription"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="14dp"
+        android:id="@+id/floating_discription" />
 
 </RelativeLayout>

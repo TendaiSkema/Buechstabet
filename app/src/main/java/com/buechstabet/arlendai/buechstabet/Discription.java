@@ -2,14 +2,14 @@ package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class Discription extends AppCompatActivity implements View.OnClickListener {
+public class Discription extends AppCompatActivity {
 
     SharedPreferences speicher;
     SharedPreferences.Editor editor;
@@ -26,12 +26,17 @@ public class Discription extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discription);
 
-        btBack = (Button)findViewById(R.id.discription_Back);
-        btEdit = (Button)findViewById(R.id.discription_edit);
-        textView = (TextView)findViewById(R.id.discription_discription);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floating_discription);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Discription.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
-        btBack.setOnClickListener(this);
-        btEdit.setOnClickListener(this);
+        textView = (TextView)findViewById(R.id.discription_discription);
 
         Bundle extras = getIntent().getExtras();
         selectedItem = extras.getInt("BeschPos");
@@ -44,20 +49,6 @@ public class Discription extends AppCompatActivity implements View.OnClickListen
                 art = backgroundTask.getArt();
             }
         }
-
-        textView.setText(art+"\n\n"+beschreibungen);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if(v == btBack){
-            Intent intent = new Intent(Discription.this, MainActivity.class);
-            startActivity(intent);
-        }
-        else if(v==btEdit){
-            Intent intent = new Intent(Discription.this,DefinEditor.class);
-            intent.putExtra("BeschPos", selectedItem);
-            startActivity(intent);
-        }
+        textView.setText("Wortart:\n"+art+"\n\n"+"Bedeutung:\n"+beschreibungen);
     }
 }

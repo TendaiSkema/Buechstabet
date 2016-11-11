@@ -1,14 +1,12 @@
 package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -47,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddWord.class);
-                intent.putExtra("List",wörter);
+                intent.putExtra("List",wörter.length);
                 startActivity(intent);
                 finish();
             }
@@ -59,25 +54,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             finish();
         }
 
-        //Layout
-        list = (ListView)findViewById(R.id.main_wörter_list);
-        list.setOnItemClickListener(this);
-
-        //überprüft fremdaufruf mit bundel
-        try {
-            Bundle extras = getIntent().getExtras();                    //versucht die extras die es von der aufrufenden Activity zu finden
-            String[] ExeptionChecker = extras.getStringArray("List");   //String[] zum überprüfen ob extras = null
-            if(ExeptionChecker != null) {
-                wörter = extras.getStringArray("List");
-            }
-
-        }catch (Exception e){
-            //fals nicht
-
-            LoadList();
-        }
-
         //List erstellungsmethode
+        LoadList();
         ListCreator();
     }
 
@@ -113,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (wörter!=null) {
             adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, wörter);
+
+            //Layout
+            list = (ListView)findViewById(R.id.main_wörter_list);
+            list.setOnItemClickListener(this);
             list.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
@@ -137,6 +119,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //to other activity
+            LoadList();
+            ListCreator();
+            Toast.makeText(this,"Aktualisiert",Toast.LENGTH_SHORT).show();
             return true;
         }
 

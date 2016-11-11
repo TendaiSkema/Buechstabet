@@ -1,12 +1,10 @@
 package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,10 +17,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
     private EditText text_input, defin;
 
     private CheckBox cb_nomen, cb_verb, cb_adjektiv;
-
-    private SharedPreferences speicher;
-    private SharedPreferences.Editor editor;
-    private String[] wörter_list, definition_list,art_list;
+    int list_length;
 
 
     @Override
@@ -48,34 +43,9 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
         best.setOnClickListener(this);
         zurück.setOnClickListener(this);
 
-        speicher = getApplicationContext().getSharedPreferences("Daten", 0);
-        editor = speicher.edit();
-
         Bundle extras = getIntent().getExtras();
         //laden der listen
-        wörter_list = new String[extras.getStringArray("List").length+1];
-        String[] wörter_dummy = extras.getStringArray("List");
-
-        for (int i =0;i<wörter_dummy.length;i++){
-            wörter_list[i]= wörter_dummy[i];
-        }
-
-        definition_list = new String[wörter_list.length];
-
-        for (int i=0;i<definition_list.length;i++){
-            definition_list[i] = speicher.getString("definition"+i,null);
-            if(definition_list[i]==null){
-                Log.e("myTag","wörter_dummy["+i+"] == null");
-            }
-        }
-        art_list = new String[wörter_list.length];
-
-        for (int i=0;i<art_list.length;i++){
-            art_list[i] = speicher.getString("art"+i,null);
-            if(art_list[i]==null){
-                Log.e("myTag","wörter_dummy["+i+"] == null");
-            }
-        }
+        list_length = extras.getInt("List");
     }
 
 
@@ -87,18 +57,13 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
                 final String newWord = text_input.getText().toString();
                 final String newDis = defin.getText().toString();
                 final String newArt = checkArt();
-
-                final int position = wörter_list.length-1;
-                wörter_list[position] = newWord;
-                definition_list[position] = newDis;
-                art_list[position]=newArt;
+                final int position = list_length;
 
                 String methode = "Save";
                 BackgroundTask back_task = new BackgroundTask(this);
                 back_task.execute(methode,newWord,newDis,newArt,String.valueOf(position));
 
                 Intent intent = new Intent(AddWord.this, MainActivity.class);
-                intent.putExtra("List",wörter_list);
                 startActivity(intent);
                 finish();
             }
@@ -149,17 +114,4 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
 
         return art;
     }
-
-    /* alte methode zum einspeichen in sharedPreferences:
-    public void Save(String wort,String besch,String art,int pos){
-        //einzelnes abspeicher der wörter
-        for(int i = 0;i<wörter_list.length;i++){
-            editor.putString("wort"+i,wörter_list[i]);
-            editor.putString("definition"+i,definition_list[i]);
-            editor.putString("art"+i,art_list[i]);
-        }
-        editor.putInt("length",wörter_list.length);
-        editor.commit();
-    }
-    */
 }
