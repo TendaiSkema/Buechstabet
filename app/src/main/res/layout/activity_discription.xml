@@ -11,20 +11,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.buechstabet.arlendai.buechstabet.Discription">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/space43"
-        android:layout_height="20dp" />
-
     <TextView
         android:text=""
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/discription_discription"
         android:layout_weight="1.00"
-        android:layout_below="@+id/space43"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/textView6"

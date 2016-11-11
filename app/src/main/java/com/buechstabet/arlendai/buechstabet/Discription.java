@@ -52,28 +52,5 @@ public class Discription extends AppCompatActivity {
         }
         textView.setText("Wortart:\n"+art+"\n\n"+"Bedeutung:\n"+beschreibungen);
         textView.setTextColor(Color.BLACK);
-        setBackground(art);
-    }
-
-    private void setBackground(String art) {
-        switch (art){
-            case "Verb": textView.setBackgroundColor(Color.BLUE);
-                break;
-            case "Adjektiv": textView.setBackgroundColor(Color.YELLOW);
-                break;
-            case "Nomen": textView.setBackgroundColor(Color.rgb(70,20,20));
-                break;
-            case "Nomdjektiv": textView.setBackgroundColor(Color.rgb(134,126,13));
-                break;
-            case "Adverb": textView.setBackgroundColor(Color.CYAN);
-                break;
-            case "Noverb": textView.setBackgroundColor(Color.rgb(27,29,60));
-                break;
-            case "Unbeschreiblich": textView.setBackgroundColor(Color.GREEN);
-                break;
-            case "Universal": textView.setBackgroundColor(Color.MAGENTA);
-                break;
-            default: textView.setBackgroundColor(Color.WHITE);
-        }
     }
 }
