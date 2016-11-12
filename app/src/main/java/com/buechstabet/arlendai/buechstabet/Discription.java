@@ -1,26 +1,26 @@
 package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Discription extends AppCompatActivity {
 
-    SharedPreferences speicher;
-    SharedPreferences.Editor editor;
-
-    private Button btBack,btEdit;
-    private TextView textView,textView2;
+    private TextView textView,textView2,textView3;
 
     int selectedItem;
     String beschreibungen, art;
     final String methode = "BeschreibungLaden";
+    private View error_include;
+    private Button error_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,24 +36,50 @@ public class Discription extends AppCompatActivity {
                 finish();
             }
         });
+        textView = (TextView) findViewById(R.id.discription_discription);
+        textView2 = (TextView) findViewById(R.id.textView9);
+        error_include = (View) findViewById(R.id.discription_error);
+        inCreate();
+    }
+    public void inCreate(){
+        if(!checkInternet()){
+            Toast.makeText(this,"Kein Internet",Toast.LENGTH_LONG).show();
+            textView2.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
+            error_include.setVisibility(View.VISIBLE);
+            error_button = (Button)findViewById(R.id.error_button);
+            error_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    inCreate();
+                }
+            });
+        }else {
+            textView.setVisibility(View.VISIBLE);
+            textView2.setVisibility(View.VISIBLE);
+            error_include.setVisibility(View.GONE);
 
-        textView = (TextView)findViewById(R.id.discription_discription);
-        textView2 = (TextView)findViewById(R.id.textView9);
+            Bundle extras = getIntent().getExtras();
+            selectedItem = extras.getInt("BeschPos");
 
-        Bundle extras = getIntent().getExtras();
-        selectedItem = extras.getInt("BeschPos");
-
-        BackgroundTask backgroundTask = new BackgroundTask(this);
-        backgroundTask.execute(methode,String.valueOf(selectedItem));
-        while (beschreibungen==null){
-            if(backgroundTask.getBesch_test()){
-                beschreibungen = backgroundTask.getBesch();
-                art = backgroundTask.getArt();
+            BackgroundTask backgroundTask = new BackgroundTask(this);
+            backgroundTask.execute(methode, String.valueOf(selectedItem));
+            while (beschreibungen == null) {
+                if (backgroundTask.getBesch_test()) {
+                    beschreibungen = backgroundTask.getBesch();
+                    art = backgroundTask.getArt();
+                }
             }
+            textView.setText("\n" + beschreibungen);
+            textView2.setText(art);
+            textView.setTextColor(Color.BLACK);
+            textView2.setTextColor(Color.BLACK);
         }
-        textView.setText("\n"+beschreibungen);
-        textView2.setText(art);
-        textView.setTextColor(Color.BLACK);
-        textView2.setTextColor(Color.BLACK);
+    }
+    public boolean checkInternet(){
+        //überprüft Internet verbindung
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo !=null && networkInfo.isConnectedOrConnecting();
     }
 }

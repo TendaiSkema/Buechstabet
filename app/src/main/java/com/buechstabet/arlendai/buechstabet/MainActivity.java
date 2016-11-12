@@ -13,25 +13,24 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     //Items Initialisierung
-    private ImageButton suche;
-    private EditText suche_text;
-    private Button new_word,bSynchro;
+    private Button error;
+    private View error_include;
     private ListView list;
+    private TextView textView;
 
     //List dinge erstellen
     private String[] wörter;
     private ArrayAdapter<String> adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -47,16 +46,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 finish();
             }
         });
+        textView = (TextView)findViewById(R.id.textView2);
+        error_include = (View) findViewById(R.id.Error_fenster);
+        beforCheck();
 
-        //check internet
-        if(!checkInternet()){
-            Toast.makeText(this,"Kein Internet...Bitte einschalten",Toast.LENGTH_LONG).show();
-            finish();
+    }
+    public void beforCheck(){
+        if(!checkInternet()) {
+            Toast.makeText(this, "Kein Internet...", Toast.LENGTH_LONG).show();
+            textView.setVisibility(View.GONE);
+            error_include.setVisibility(View.VISIBLE);
+            error = (Button)findViewById(R.id.error_button);
+            error.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    beforCheck();
+                }
+            });
         }
-
-        //List erstellungsmethode
-        LoadList();
-        ListCreator();
+        else {
+            //List erstellungsmethode
+            error_include.setVisibility(View.GONE);
+            textView.setVisibility(View.VISIBLE);
+            LoadList();
+            ListCreator();
+        }
     }
 
     @Override
@@ -111,12 +125,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //to other activity
             LoadList();
