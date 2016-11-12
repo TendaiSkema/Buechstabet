@@ -16,7 +16,7 @@ public class Discription extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
     private Button btBack,btEdit;
-    private TextView textView;
+    private TextView textView,textView2;
 
     int selectedItem;
     String beschreibungen, art;
@@ -38,6 +38,7 @@ public class Discription extends AppCompatActivity {
         });
 
         textView = (TextView)findViewById(R.id.discription_discription);
+        textView2 = (TextView)findViewById(R.id.textView9);
 
         Bundle extras = getIntent().getExtras();
         selectedItem = extras.getInt("BeschPos");
@@ -50,7 +51,9 @@ public class Discription extends AppCompatActivity {
                 art = backgroundTask.getArt();
             }
         }
-        textView.setText("Wortart:\n"+art+"\n\n"+"Bedeutung:\n"+beschreibungen);
+        textView.setText("\n"+beschreibungen);
+        textView2.setText(art);
         textView.setTextColor(Color.BLACK);
+        textView2.setTextColor(Color.BLACK);
     }
 }
