@@ -14,13 +14,11 @@ import android.widget.Toast;
 
 public class Discription extends AppCompatActivity {
 
-    private TextView textView,textView2,textView3;
+    private TextView textView,textView2;
 
     int selectedItem;
     String beschreibungen, art;
-    final String methode = "BeschreibungLaden";
-    private View error_include;
-    private Button error_button;
+    String[] besch_list, art_list,wörter_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,54 +30,28 @@ public class Discription extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Discription.this, MainActivity.class);
+                intent.putExtra("Wörter",wörter_list);
+                intent.putExtra("BeschList",besch_list);
+                intent.putExtra("ArtList",art_list);
                 startActivity(intent);
                 finish();
             }
         });
         textView = (TextView) findViewById(R.id.discription_discription);
         textView2 = (TextView) findViewById(R.id.textView9);
-        error_include = (View) findViewById(R.id.discription_error);
-        inCreate();
-    }
-    public void inCreate(){
-        if(!checkInternet()){
-            Toast.makeText(this,"Kein Internet",Toast.LENGTH_LONG).show();
-            textView2.setVisibility(View.GONE);
-            textView.setVisibility(View.GONE);
-            error_include.setVisibility(View.VISIBLE);
-            error_button = (Button)findViewById(R.id.error_button);
-            error_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    inCreate();
-                }
-            });
-        }else {
-            textView.setVisibility(View.VISIBLE);
-            textView2.setVisibility(View.VISIBLE);
-            error_include.setVisibility(View.GONE);
 
-            Bundle extras = getIntent().getExtras();
-            selectedItem = extras.getInt("BeschPos");
+        Bundle extras = getIntent().getExtras();
+        selectedItem = extras.getInt("BeschPos");
+        besch_list = extras.getStringArray("BeschList");
+        art_list = extras.getStringArray("ArtList");
+        wörter_list = extras.getStringArray("Wörter");
 
-            BackgroundTask backgroundTask = new BackgroundTask(this);
-            backgroundTask.execute(methode, String.valueOf(selectedItem));
-            while (beschreibungen == null) {
-                if (backgroundTask.getBesch_test()) {
-                    beschreibungen = backgroundTask.getBesch();
-                    art = backgroundTask.getArt();
-                }
-            }
-            textView.setText("\n" + beschreibungen);
-            textView2.setText(art);
-            textView.setTextColor(Color.BLACK);
-            textView2.setTextColor(Color.BLACK);
-        }
-    }
-    public boolean checkInternet(){
-        //überprüft Internet verbindung
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo !=null && networkInfo.isConnectedOrConnecting();
+        beschreibungen = besch_list[selectedItem];
+        art = art_list[selectedItem];
+
+        textView.setText("\n" + beschreibungen);
+        textView2.setText(art);
+        textView.setTextColor(Color.BLACK);
+        textView2.setTextColor(Color.BLACK);
     }
 }

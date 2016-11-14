@@ -15,6 +15,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
 
     private Button best,zurück;
     private EditText text_input, defin;
+    private String[] besch_list,wörter_list,art_list;
 
     private CheckBox cb_nomen, cb_verb, cb_adjektiv;
     int list_length;
@@ -45,6 +46,10 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
 
         Bundle extras = getIntent().getExtras();
         //laden der listen
+
+        besch_list = extras.getStringArray("BeschList");
+        art_list = extras.getStringArray("ArtList");
+        wörter_list = extras.getStringArray("Wörter");
         list_length = extras.getInt("List");
     }
 
