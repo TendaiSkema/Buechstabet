@@ -2,7 +2,6 @@ package com.buechstabet.arlendai.buechstabet;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,20 +20,17 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-/**
- * Created by Tendai Rondof on 06.11.2016.
- */
+//Created by Tendai Rondof on 06.11.2016.
+
 
 public class BackgroundTask extends AsyncTask<String,Void,String> {
 
-    Context ctx;
-    final String get_word_list= "http://buechstabet.esy.es/buechstabet/get_word_list.php";
-    final String url = "http://buechstabet.esy.es/buechstabet/add_word.php";
-    final String get_besch = "http://buechstabet.esy.es/buechstabet/get_beschreibung.php";
-    String jason_string,methode;
-    String[] word_array;
-    String besch,art;
-    boolean wörter_test,besch_test;
+    private Context ctx;
+    private final String get_lists= "http://buechstabet.esy.es/buechstabet/load.php";
+    private final String url = "http://buechstabet.esy.es/buechstabet/add_word.php";
+    private String jason_string,methode;
+    private String[] word_array,besch_array,art_array;
+    private boolean wörter_test;
 
     BackgroundTask(Context ctx){
         this.ctx = ctx;
@@ -85,61 +81,11 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
             }
         }
 
-        else if(methode.equals("BeschreibungLaden")){
-            //Laden der Beschreibung
-            String position = params[1];
-            Log.i("JSON","position = "+position);
-            try {
-                //stellt die verbindung zum php script her
-                URL scriptURL = new URL(get_besch);
-                HttpURLConnection connection = (HttpURLConnection) scriptURL.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setDoOutput(true);
-                OutputStream outputStream = connection.getOutputStream();
-
-                //Die zu speichernden daten anpassen und "key" zuordnen
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                String daten =  URLEncoder.encode("pos","UTF-8")+"="+URLEncoder.encode(position,"UTF-8");
-                bufferedWriter.write(daten);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-
-                InputStream inputStream = connection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder stringBuilder = new StringBuilder();
-
-                //liest aus dem bufferedReader jede zeile aus und bildet einen Java string
-                while ((jason_string = bufferedReader.readLine()) != null){
-
-                    stringBuilder.append(jason_string+"\n");
-                    Log.i("JSON","Jason_string = "+jason_string);
-
-                }
-                bufferedReader.close();
-                inputStream.close();
-                connection.disconnect();
-
-                //kürzt den String um den überflüssigen zeilen umbruch und speichert in dem string
-                String beschreibung_string = stringBuilder.toString().trim();
-                makeJSONtoString(beschreibung_string);
-                Log.i("JSON",beschreibung_string);
-                besch_test=true;
-                return "Beschreibung geladen";
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         else if(methode.equals("LoadList")){
-            //Läd die wörter liste
+            //Läd die listen
             try {
                 //stellt die verbindung zum php script her
-                URL scriptURL = new URL(get_word_list);
+                URL scriptURL = new URL(get_lists);
                 HttpURLConnection connection = (HttpURLConnection) scriptURL.openConnection();
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -157,8 +103,8 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
                 connection.disconnect();
 
                 //kürzt den String um den überflüssigen zeilen umbruch und speichert im in dem array
-                String word_list_string = stringBuilder.toString().trim();
-                word_array = makeJSONtoStringArray(word_list_string);
+                String lists_string = stringBuilder.toString().trim();
+                makeJSONtoStringArray(lists_string);
                 wörter_test=true;
                 return "Wörter geladen";
 
@@ -173,41 +119,28 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         return null;
     }
 
-    private void makeJSONtoString(String besch_string) {
-        try {
-            //macht der php-jasonstring zu einem java string
-            JSONObject jasonObject = new JSONObject(besch_string);
-            JSONArray jasonArray = jasonObject.getJSONArray("besch_response");
-            Log.i("JASON","Jsonarray = "+jasonArray.length());
-            JSONObject jo = jasonArray.getJSONObject(0);
-            art = jo.getString("art");
-            besch = jo.getString("besch");
-            besch_test = true;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String[] makeJSONtoStringArray(String word_list_string) {
+    private void makeJSONtoStringArray(String word_list_string) {
 
         try {
             //macht der php-jasonstring zu einem java string array
             JSONObject jasonObject = new JSONObject(word_list_string);
             JSONArray jasonArray = jasonObject.getJSONArray("server_response");
             int count = 0;
-            String[] wort = new String[jasonArray.length()];
+            word_array = new String[jasonArray.length()];
+            besch_array = new String[jasonArray.length()];
+            art_array = new String[jasonArray.length()];
+
             while (count<jasonArray.length()){
                 JSONObject jo = jasonArray.getJSONObject(count);
-                wort[count] = jo.getString("wort");
+                word_array[count] = jo.getString("wort");
+                besch_array[count] = jo.getString("besch");
+                art_array[count] = jo.getString("art");
                 count++;
             }
-            return wort;
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
     public String getTextFromPHP(InputStream is){
@@ -238,9 +171,6 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         super.onProgressUpdate(values);
     }
 
-    @Override
-    protected void onPostExecute(String result) {}
-
     public String[] getWörter(){
         return word_array;
     }
@@ -248,15 +178,11 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         return wörter_test;
     }
 
-    public String getArt() {
-        return art;
+    public String[] getArt() {
+        return art_array;
     }
 
-    public String getBesch() {
-        return besch;
-    }
-
-    public boolean getBesch_test() {
-        return besch_test;
+    public String[] getBesch() {
+        return besch_array;
     }
 }
