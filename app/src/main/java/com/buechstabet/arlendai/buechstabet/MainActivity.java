@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView textView;
 
     //List dinge erstellen
-    private String[] wörter;
+    private String[] wörter,besch,art;
     private ArrayAdapter<String> adapter;
 
     @Override
@@ -42,13 +43,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddWord.class);
                 intent.putExtra("List",wörter.length);
+                intent.putExtra("Wörter",wörter);
+                intent.putExtra("BeschList",besch);
+                intent.putExtra("ArtList",art);
                 startActivity(intent);
                 finish();
             }
         });
+
         textView = (TextView)findViewById(R.id.textView2);
         error_include = (View) findViewById(R.id.Error_fenster);
-        beforCheck();
+
+        try{
+
+            Bundle extras = getIntent().getExtras();
+            besch = extras.getStringArray("BeschList");
+            art = extras.getStringArray("ArtList");
+            wörter = extras.getStringArray("Wörter");
+            ListCreator();
+
+        }catch (Exception e) {
+
+            Log.e("Teg","Bundle == null");
+            beforCheck();
+        }
 
     }
     public void beforCheck(){
@@ -97,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //wen der überprüfungs boolean true ist wird die liste hergeholt
             if(backgroundTask.getTest()){
                 wörter = backgroundTask.getWörter();
+                art = backgroundTask.getArt();
+                besch = backgroundTask.getBesch();
             }
         }
     }
@@ -119,6 +139,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Intent intent = new Intent(MainActivity.this, Discription.class);
         intent.putExtra("BeschPos", position);
+        intent.putExtra("BeschList",besch);
+        intent.putExtra("ArtList",art);
+        intent.putExtra("Wörter", wörter);
         startActivity(intent);
 
     }
