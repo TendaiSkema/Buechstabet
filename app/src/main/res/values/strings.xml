@@ -2,4 +2,11 @@
     <string name="app_name">Buechstabet</string>
     <string name="action_settings">Aktualisieren</string>
     <string name="credits">Made by Tendai®</string>
+    <string name="wort_definition">Wort Definition</string>
+    <string name="adjektiv">Adjektiv</string>
+    <string name="verb">Verb</string>
+    <string name="neues_wort">Neues Wort</string>
+    <string name="nomen">Nomen</string>
+    <string name="hinzuf_gen">Hinzufügen</string>
+    <string name="zur_ck">Zurück</string>
 </resources>
