@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "711664212793",
+    "project_id": "buechstabet",
+    "storage_bucket": "buechstabet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711664212793:android:9f3518a990bad59c2e66e8",
+        "android_client_info": {
+          "package_name": "com.buechstabet.arlendai.buechstabet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711664212793-2qtjmt1p553idup13tluf0n739horlvu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwt5AtN-Ud1ZD-I5QCVRxuJpvtARuH8bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711664212793-2qtjmt1p553idup13tluf0n739horlvu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
