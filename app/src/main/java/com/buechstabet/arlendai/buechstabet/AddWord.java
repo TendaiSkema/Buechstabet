@@ -13,9 +13,8 @@ import android.widget.Toast;
 
 public class AddWord extends AppCompatActivity implements View.OnClickListener {
 
-    private Button best,zurück;
+    private Button best, zuruek;
     private EditText text_input, defin;
-    private String[] besch_list,wörter_list,art_list;
 
     private CheckBox cb_nomen, cb_verb, cb_adjektiv;
     int list_length;
@@ -33,23 +32,23 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
             finish();
         }
         //init items
-        best = (Button)findViewById(R.id.addWord_add);
-        defin = (EditText)findViewById(R.id.addWord_definition);
-        text_input = (EditText)findViewById(R.id.addWord_word);
-        zurück =(Button)findViewById(R.id.addWord_back);
-        cb_nomen = (CheckBox)findViewById(R.id.addWord_cB_Nomen);
-        cb_adjektiv = (CheckBox)findViewById(R.id.addWord_cB_Adjektiv);
-        cb_verb = (CheckBox)findViewById(R.id.addWord_cB_Verb);
+        best = findViewById(R.id.addWord_add);
+        defin = findViewById(R.id.addWord_definition);
+        text_input = findViewById(R.id.addWord_word);
+        zuruek = findViewById(R.id.addWord_back);
+        cb_nomen = findViewById(R.id.addWord_cB_Nomen);
+        cb_adjektiv = findViewById(R.id.addWord_cB_Adjektiv);
+        cb_verb = findViewById(R.id.addWord_cB_Verb);
 
         best.setOnClickListener(this);
-        zurück.setOnClickListener(this);
+        zuruek.setOnClickListener(this);
 
         Bundle extras = getIntent().getExtras();
         //laden der listen
 
-        besch_list = extras.getStringArray("BeschList");
-        art_list = extras.getStringArray("ArtList");
-        wörter_list = extras.getStringArray("Wörter");
+        String[] besch_list = extras.getStringArray("BeschList");
+        String[] art_list = extras.getStringArray("ArtList");
+        String[] woerter_list = extras.getStringArray("Wörter");
         list_length = extras.getInt("List");
     }
 
@@ -76,7 +75,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(getApplicationContext(), "Wortfeld oder Beschreibung ist leer!", Toast.LENGTH_SHORT).show();
             }
         }
-        else if(v==zurück){
+        else if(v== zuruek){
             Intent intent = new Intent(AddWord.this, MainActivity.class);
             startActivity(intent);
             finish();

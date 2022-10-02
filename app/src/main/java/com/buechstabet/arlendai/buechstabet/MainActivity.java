@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,48 +15,45 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    //Items Initialisierung
-    private Button error;
     private View error_include;
-    private ListView list;
     private TextView textView;
 
     //List dinge erstellen
-    private String[] wörter,besch,art;
-    private ArrayAdapter<String> adapter;
+    private String[] woerter,besch,art;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddWord.class);
-                intent.putExtra("List",wörter.length);
-                intent.putExtra("Wörter",wörter);
-                intent.putExtra("BeschList",besch);
-                intent.putExtra("ArtList",art);
-                startActivity(intent);
-                finish();
-            }
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, AddWord.class);
+            intent.putExtra("List", woerter.length);
+            intent.putExtra("Wörter", woerter);
+            intent.putExtra("BeschList",besch);
+            intent.putExtra("ArtList",art);
+            startActivity(intent);
+            finish();
         });
 
-        textView = (TextView)findViewById(R.id.textView2);
-        error_include = (View) findViewById(R.id.Error_fenster);
+        textView = findViewById(R.id.textView2);
+        error_include = findViewById(R.id.Error_fenster);
 
         try{
 
             Bundle extras = getIntent().getExtras();
             besch = extras.getStringArray("BeschList");
             art = extras.getStringArray("ArtList");
-            wörter = extras.getStringArray("Wörter");
+            woerter = extras.getStringArray("Wörter");
             ListCreator();
 
         }catch (Exception e) {
@@ -74,13 +68,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Toast.makeText(this, "Kein Internet...", Toast.LENGTH_LONG).show();
             textView.setVisibility(View.GONE);
             error_include.setVisibility(View.VISIBLE);
-            error = (Button)findViewById(R.id.error_button);
-            error.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    beforCheck();
-                }
-            });
+            //Items Initialisierung
+            Button error = findViewById(R.id.error_button);
+            error.setOnClickListener(view -> beforCheck());
         }
         else {
             //List erstellungsmethode
@@ -110,11 +100,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String methode = "LoadList";
         BackgroundTask backgroundTask = new BackgroundTask(this);
         backgroundTask.execute(methode);
-        while (wörter == null){
+        while (woerter == null){
 
             //wen der überprüfungs boolean true ist wird die liste hergeholt
             if(backgroundTask.getTest()){
-                wörter = backgroundTask.getWörter();
+                woerter = backgroundTask.getWörter();
                 art = backgroundTask.getArt();
                 besch = backgroundTask.getBesch();
             }
@@ -123,11 +113,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //erstellung der Liste
     public void ListCreator(){
 
-        if (wörter!=null) {
-            adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, wörter);
+        if (woerter !=null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, woerter);
 
             //Layout
-            list = (ListView)findViewById(R.id.main_wörter_list);
+            ListView list = findViewById(R.id.main_wörter_list);
             list.setOnItemClickListener(this);
             list.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -141,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra("BeschPos", position);
         intent.putExtra("BeschList",besch);
         intent.putExtra("ArtList",art);
-        intent.putExtra("Wörter", wörter);
+        intent.putExtra("Wörter", woerter);
         startActivity(intent);
 
     }
