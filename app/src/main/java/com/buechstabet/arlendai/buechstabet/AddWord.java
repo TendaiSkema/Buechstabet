@@ -11,14 +11,18 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+
 public class AddWord extends AppCompatActivity implements View.OnClickListener {
 
     private Button best, zuruek;
-    private EditText text_input, defin;
+    private EditText text_input, defin, example;
 
     private CheckBox cb_nomen, cb_verb, cb_adjektiv;
-    int list_length;
 
+    private DbManager dbManager = new DbManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
         }
         //init items
         best = findViewById(R.id.addWord_add);
+        example = findViewById(R.id.addWord_usage);
         defin = findViewById(R.id.addWord_definition);
         text_input = findViewById(R.id.addWord_word);
         zuruek = findViewById(R.id.addWord_back);
@@ -49,23 +54,26 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
         String[] besch_list = extras.getStringArray("BeschList");
         String[] art_list = extras.getStringArray("ArtList");
         String[] woerter_list = extras.getStringArray("Wörter");
-        list_length = extras.getInt("List");
     }
 
+
+    private void onAdditionComplete(Task task){
+        Toast.makeText(this, "Word added", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public void onClick(View v) {
         if(v == best){
-            if(text_input.getText().length()>0 && defin.getText().length()>0) {
+            if(text_input.getText().length()>0 &&
+                    defin.getText().length()>0) {
 
-                final String newWord = text_input.getText().toString();
-                final String newDis = defin.getText().toString();
-                final String newArt = checkArt();
-                final int position = list_length;
+                WordObj word = new WordObj();
+                word.word = text_input.getText().toString();
+                word.dicription = defin.getText().toString();
+                word.type = checkArt();
+                word.example = example.getText().toString();
 
-                String methode = "Save";
-                BackgroundTask back_task = new BackgroundTask(this);
-                back_task.execute(methode,newWord,newDis,newArt,String.valueOf(position));
+                dbManager.AddWord("CH",word.toMap(),this::onAdditionComplete);
 
                 Intent intent = new Intent(AddWord.this, MainActivity.class);
                 startActivity(intent);
@@ -81,6 +89,7 @@ public class AddWord extends AppCompatActivity implements View.OnClickListener {
             finish();
         }
     }
+
     public boolean checkInternet(){
         //überprüft Internet verbindung
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
